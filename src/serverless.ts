@@ -12,7 +12,13 @@ let server: Handler;
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
+  const configService = app.get(ConfigService);
+  const baseUrl = configService.get<string>('API_BASE_URL');
+  const stage = configService.get<string>('NODE_ENV');
+  const URL = `${baseUrl}/${stage}`;
+
   const config = new DocumentBuilder()
+    .addServer(URL)
     .setTitle('Star Wars API')
     .setDescription(
       `Star Wars API
@@ -27,8 +33,6 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
 
   SwaggerModule.setup('docs', app, document);
-  const configService = app.get(ConfigService);
-  const port = configService.get<number>('PORT');
 
   await app.init();
 
