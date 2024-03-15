@@ -1,4 +1,4 @@
-service: ripley-backend
+service: rimac-backend
 
 useDotenv: true
 
