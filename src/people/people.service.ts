@@ -51,8 +51,8 @@ export class PeopleService {
       if (id < 1) {
         throw new HttpException('Invalid id number', HttpStatus.BAD_REQUEST);
       }
-      
       const people = await this.peopleRepository.findOneBy({ id });
+
       if (people) {
         return people;
       }
@@ -65,6 +65,43 @@ export class PeopleService {
     } catch (error) {
       console.error(`The following error has ocurred: ${error}`);
       throw new HttpException(`The person could not be retrieved`, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+  }
+
+  async findOneToTranslate(id: number) {
+    try {
+      if (id < 1) {
+        throw new HttpException('Invalid id number', HttpStatus.BAD_REQUEST);
+      }
+      
+      const people = await this.peopleRepository.findOneBy({ id });
+      if (people) {
+        return this.translatePerson(people);
+      }
+
+      const { data } = await firstValueFrom(this.httpService.get(`${id}`))
+      
+      await this.peopleRepository.save({ id, ...data });
+
+      return this.translatePerson(data);
+    } catch (error) {
+      console.error(`The following error has ocurred: ${error}`);
+      throw new HttpException(`The person could not be retrieved`, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
+  }
+
+  private translatePerson(person: People) {
+    return {
+      nombre: person.name,
+      nacimiento: person.birth_year,
+      colorOjos: person.eye_color,
+      genero: person.gender,
+      colorCabello: person.hair_color,
+      altura: person.height,
+      mundoNatal: person.homeworld,
+      masa: person.mass,
+      colorPiel: person.skin_color,
+      enlace: person.url
     }
   }
 }

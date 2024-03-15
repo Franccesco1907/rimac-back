@@ -20,7 +20,7 @@ export class PeopleController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  @ApiResponse({ status: HttpStatus.OK, description: 'The people were retrieved.' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'The people were retrieved.', type: CreatePersonDto, isArray: true })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
   @ApiResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'The people could not be retrieved.' })
   @ApiInternalServerErrorResponse({ description: 'Swapi Server Error' })
@@ -31,11 +31,21 @@ export class PeopleController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  @ApiResponse({ status: HttpStatus.OK, description: 'The person was retrieved.' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'The person was retrieved.', type: CreatePersonDto })
   @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
   @ApiResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'The person could not be retrieved.' })
   @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
   findOne(@Param('id') id: string) {
     return this.peopleService.findOne(+id);
+  }
+
+  @Get('translate/:id')
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({ status: HttpStatus.OK, description: 'The person was translated.', type: CreatePersonDto })
+  @ApiResponse({ status: HttpStatus.BAD_REQUEST, description: 'Bad Request' })
+  @ApiResponse({ status: HttpStatus.INTERNAL_SERVER_ERROR, description: 'The person could not be translated.' })
+  @ApiInternalServerErrorResponse({ description: 'Internal Server Error' })
+  findOneToTranslate(@Param('id') id: string) {
+    return this.peopleService.findOneToTranslate(+id);
   }
 }
